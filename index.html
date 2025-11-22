@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aniversário do Kainã | Boteco Véio e Fubanga</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Permanent+Marker&family=Rye&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Configuration -->
     <script>
       tailwind.config = {
         theme: {
@@ -37,6 +43,8 @@
         }
       }
     </script>
+
+    <!-- Global Styles -->
     <style>
       body {
         background-color: #f0e68c;
@@ -53,20 +61,683 @@
         background: #D32F2F; 
         border-radius: 6px;
       }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #fff;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+      }
     </style>
-  <script type="importmap">
+
+    <!-- Import Map for Modules -->
+    <script type="importmap">
 {
   "imports": {
-    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.263.1?external=react",
+    "framer-motion": "https://esm.sh/framer-motion@10.12.16?external=react,react-dom",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
   }
 }
 </script>
-</head>
+
+    <!-- Babel for in-browser JSX transformation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
   <body>
     <div id="root"></div>
+
+    <!-- MAIN APPLICATION SCRIPT -->
+    <script type="text/babel" data-type="module">
+      import React, { useState, useEffect, useRef } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { Music, Star, Zap, Armchair, Tv, Radio, Cigarette, Volume2, VolumeX, MapPin, CheckCircle, Beer, Utensils, ArrowRight, ArrowLeft, Loader2, Calendar } from 'lucide-react';
+      import { motion, AnimatePresence } from 'framer-motion';
+
+      // --- CONSTANTS ---
+      // REPLACE THE URL BELOW with your own MP3 link.
+      // YouTube links will NOT work here. It must be a direct link to an audio file (.mp3).
+      // Example: upload your mp3 to a hosting service or GitHub and get the raw link.
+      const MUSIC_URL = "https://audio.jukehost.co.uk/feZ27hAcDCPqeL8TZuV2V0ackeiFi51J"; 
+
+      const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/ILY3Mm7KhJIBdxF5cQiPHS";
+
+      const PARTY_INFO = {
+        title: "Aniversário do Kainã",
+        theme: "Véio e Fubanga de Boteco",
+        dressCode: "Obrigatório vir vestido a caráter!!! Terá prêmios para os mais dedicados na vestimenta.",
+        price: "R$40,00",
+        address: "Rodovia Jornalista Manoel de Menezes 634, casa 5 - 88061-700",
+        city: "Praia Mole, Florianópolis, SC",
+        obs: "Vou ter que cobrar R$40 pra viabilizar o rolê (e pow, pensa bem, atrações, comida e bebida... TÁ VALENDO!)",
+      };
+
+      const ATTRACTIONS = [
+        { name: "Judivan do Teclado (18h - 20h)", icon: <Music className="w-6 h-6" /> },
+        { name: "Show de Mágico (21h)", icon: <Star className="w-6 h-6" /> },
+        { name: "Espetáculo Pirotécnico (22h)", icon: <Zap className="w-6 h-6" /> },
+      ];
+
+      const EXPERIENCES = [
+        { title: "SHARK TANK DE IDÉIAS LIXO", desc: "Prepara o seu pitch, com slide e tudo, e vamo ver quem investe na sua idéia bosta" },
+        { title: "Baseados enrolados em folha de ouro", desc: "Um clássico desde 2021" },
+        { title: "Tiro ao alvo com premiações", desc: "Acerte e ganhe (ou não)" },
+        { title: "Subcelebridades me dando parabéns", desc: "O auge da fama" },
+      ];
+
+      const TRANSITION_IMAGES = {
+        theme: [
+          "https://i.pinimg.com/236x/a1/97/77/a19777c6645694bcf8964896f30d2e32.jpg",
+          "https://scontent-poa1-1.xx.fbcdn.net/v/t1.6435-9/120825968_2818568345028757_4110909590054883723_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=q-RT5NLATZwQ7kNvwFiSsKU&_nc_oc=Adnb_R7Wex7rDSLiM_6vWNa4DVsXZaxw6F-FewDVIn8VzL2f7BN-PfDc95uPNQZX_-UiaYYFVVO4cYEwiDev96El&_nc_zt=23&_nc_ht=scontent-poa1-1.xx&_nc_gid=XV4rc2usNsSYkuw_v8Blfg&oh=00_Afh1fPoosmxd4NQF33WG5Z3cVTpYuIScOq_X4PcogRcN8w&oe=69498EDB"
+        ],
+        attractions: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-mgBstdIPZwxc3qoTRR_6V5urQsxRoF4b2Q&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjFKhhcR2N2g3lHwf09Dn9FbkTKD01E7Qbyg&s",
+          "https://static.escolakids.uol.com.br/conteudo_legenda/645ed6bb55efead6fc9f3713ad333f00.jpg"
+        ],
+        food: [
+          "https://www.estadao.com.br/resizer/v2/IIZRATR3GJDIPAHEYG4BZ3I37Y.jpeg?quality=80&auth=3c9514884d78f71a3ddb9420c783d9bcf3b81021e4c3c8fbd8b040fd4dfc4366&width=1075&height=527&smart=true",
+          "https://destro.fbitsstatic.net/img/p/cachaca-velho-barreiro-600ml-72066/258602.jpg?w=500&h=500&v=202501231555&qs=ignore",
+          "https://cozinhasimples.com.br/wp-content/uploads/cachorro-quente-cozinha-simples.jpg"
+        ],
+        experiences: [
+          "https://static.todamateria.com.br/upload/tu/ba/tubaraobranco-cke.jpg",
+          "https://conteudo.imguol.com.br/blogs/48/files/2013/09/ShinyWorld-612x400.jpg",
+          "https://images.tcdn.com.br/img/img_prod/664029/tiro_ao_alvo_brinquedo_infantil_bola_velcro_gruda_super_divertido_14064_1_898c859a54af4e989a8e6a4bfe17a05b.jpg",
+          "https://f.i.uol.com.br/fotografia/2023/06/04/1685914464647d03607b28c_1685914464_3x2_lg.jpg"
+        ],
+        location: [
+          "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/46/e8/c1/praia-mole-e-galheta.jpg?w=1200&h=1200&s=1"
+        ]
+      };
+
+      const FLOATING_ITEMS = [
+        { id: 1, type: 'beer', emoji: '🍺', size: 'text-6xl', speed: 4, delay: 0 },
+        { id: 2, type: 'chair', icon: <Armchair size={48} color="#D32F2F" />, size: 'text-5xl', speed: 6, delay: 1 },
+        { id: 3, type: 'tv', icon: <Tv size={50} color="#333" />, size: 'text-4xl', speed: 5, delay: 2 },
+        { id: 4, type: 'slipper', emoji: '🩴', size: 'text-5xl', speed: 7, delay: 0.5 },
+        { id: 5, type: 'radio', icon: <Radio size={40} color="#555" />, size: 'text-4xl', speed: 8, delay: 3 },
+        { id: 6, type: 'cigarette', icon: <Cigarette size={30} color="#888" />, size: 'text-3xl', speed: 5, delay: 1.5 },
+        { id: 7, type: 'beer-crate', emoji: '🍻', size: 'text-6xl', speed: 5, delay: 4 },
+        { id: 8, type: 'brazil', emoji: '🇧🇷', size: 'text-4xl', speed: 9, delay: 2 },
+      ];
+
+      // --- COMPONENT: BACKGROUND ---
+      const Background = () => {
+        const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+
+        useEffect(() => {
+          setWindowSize({
+            width: window.innerWidth,
+            height: window.innerHeight,
+          });
+
+          const handleResize = () => {
+            setWindowSize({
+              width: window.innerWidth,
+              height: window.innerHeight,
+            });
+          };
+
+          window.addEventListener('resize', handleResize);
+          return () => window.removeEventListener('resize', handleResize);
+        }, []);
+
+        return (
+          <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
+            {/* Tile Pattern Background */}
+            <div 
+              className="absolute inset-0 opacity-20"
+              style={{
+                backgroundImage: `
+                  linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                  linear-gradient(135deg, #ccc 25%, transparent 25%),
+                  linear-gradient(45deg, transparent 75%, #ccc 75%),
+                  linear-gradient(135deg, transparent 75%, #ccc 75%)
+                `,
+                backgroundSize: '40px 40px',
+                backgroundColor: '#fffdf0' 
+              }}
+            />
+            
+            {/* Grime Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-yellow-900/10 to-black/20 mix-blend-multiply" />
+
+            {/* Floating Items */}
+            {windowSize.width > 0 && FLOATING_ITEMS.map((item, index) => {
+              const randomX = Math.random() * windowSize.width;
+              const randomY = Math.random() * windowSize.height;
+
+              return (
+                <motion.div
+                  key={item.id}
+                  className={`absolute ${item.size} drop-shadow-2xl opacity-90`}
+                  initial={{ x: randomX, y: randomY, rotate: 0 }}
+                  animate={{
+                    y: [randomY - 50, randomY + 50, randomY - 50],
+                    rotate: [0, 360],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{
+                    duration: item.speed + 5, 
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: item.delay,
+                  }}
+                  style={{
+                    zIndex: index,
+                  }}
+                >
+                  {item.emoji ? (
+                    <span className="filter drop-shadow-lg">{item.emoji}</span>
+                  ) : (
+                    <div className="filter drop-shadow-lg">{item.icon}</div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        );
+      };
+
+      // --- COMPONENT: AUDIO PLAYER ---
+      const AudioPlayer = ({ isPlaying, setIsPlaying }) => {
+        const audioRef = useRef(null);
+
+        useEffect(() => {
+          const audio = audioRef.current;
+          if (audio) {
+            if (isPlaying) {
+              const playPromise = audio.play();
+              if (playPromise !== undefined) {
+                playPromise
+                  .then(() => {
+                    // Audio started successfully
+                  })
+                  .catch((error) => {
+                    console.warn("Autoplay prevented by browser policy. Music will start on first interaction.");
+                    setIsPlaying(false);
+                  });
+              }
+            } else {
+              audio.pause();
+            }
+          }
+        }, [isPlaying, setIsPlaying]);
+
+        const togglePlay = () => {
+          setIsPlaying(!isPlaying);
+        };
+
+        return (
+          <div className="fixed top-4 right-4 z-50">
+            <audio 
+              ref={audioRef} 
+              src={MUSIC_URL} 
+              loop 
+              preload="auto"
+            />
+            
+            <div className="bg-amber-800 p-2 rounded-lg border-4 border-amber-950 shadow-xl flex items-center gap-2 transform rotate-2 hover:rotate-0 transition-transform">
+              <div className="bg-black/80 rounded-full p-2 border-2 border-gray-400">
+                 {isPlaying ? (
+                   <div className="animate-pulse text-green-400">
+                      <Volume2 size={24} />
+                   </div>
+                 ) : (
+                   <div className="text-red-500">
+                      <VolumeX size={24} />
+                   </div>
+                 )}
+              </div>
+              
+              <div className="flex flex-col">
+                  <span className="text-xs text-amber-100 font-mono uppercase tracking-widest">Boteco FM</span>
+                  <button 
+                      onClick={togglePlay}
+                      className="text-white font-bold text-sm bg-gray-700 px-2 py-1 rounded hover:bg-gray-600 active:translate-y-1 transition-all"
+                  >
+                      {isPlaying ? 'PAUSAR' : 'TOCAR'}
+                  </button>
+              </div>
+              
+              {/* Decorative Antenna */}
+              <div className="absolute -top-6 right-2 w-1 h-8 bg-gray-400 -rotate-12 rounded-t-full origin-bottom"></div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- HELPER: TRANSITION FX ---
+      const TransitionFX = ({ step }) => {
+        const [visible, setVisible] = useState(false);
+
+        useEffect(() => {
+          if (TRANSITION_IMAGES[step]) {
+            setVisible(true);
+            const timer = setTimeout(() => setVisible(false), 2000); // 2 seconds
+            return () => clearTimeout(timer);
+          } else {
+            setVisible(false);
+          }
+        }, [step]);
+
+        const getPosition = (index, total) => {
+          const positions = [
+            { top: '10%', left: '5%' },
+            { bottom: '10%', right: '5%' },
+            { top: '15%', right: '10%' },
+            { bottom: '20%', left: '10%' },
+            { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
+          ];
+          return positions[index % positions.length];
+        };
+
+        return (
+          <AnimatePresence>
+            {visible && TRANSITION_IMAGES[step]?.map((src, index) => {
+              const pos = getPosition(index, TRANSITION_IMAGES[step].length);
+              const randomRotate = (index % 2 === 0 ? 1 : -1) * (Math.random() * 15 + 5);
+              
+              return (
+                <motion.div
+                  key={`${step}-${index}`}
+                  initial={{ opacity: 0, scale: 0, rotate: 0 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1, 
+                    rotate: randomRotate,
+                    y: [0, -20, 0]
+                  }}
+                  exit={{ opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
+                  transition={{ duration: 0.5, type: 'spring' }}
+                  className="fixed z-50 pointer-events-none drop-shadow-2xl"
+                  style={{ 
+                    ...pos,
+                    maxWidth: '180px',
+                    maxHeight: '180px'
+                  }}
+                >
+                   <img 
+                     src={src} 
+                     alt="sticker" 
+                     className="w-full h-full object-cover border-4 border-white shadow-lg rounded-sm"
+                   />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        );
+      };
+
+      // --- HELPER: STEP LAYOUT ---
+      const StepLayout = ({ 
+        children, onNext, onBack, nextLabel, title, icon, variants, direction 
+      }) => {
+        return (
+          <motion.div
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="w-full max-w-md bg-white p-6 md:p-8 rounded-sm shadow-xl border-2 border-gray-200 relative z-10"
+          >
+            {/* Back Button */}
+            <button 
+              onClick={onBack}
+              className="absolute top-4 left-4 p-2 text-gray-400 hover:text-boteco-red transition-colors rounded-full hover:bg-gray-100"
+            >
+              <ArrowLeft size={24} />
+            </button>
+
+            {/* Header */}
+            <div className="text-center mb-6 mt-2">
+              {icon && <div className="inline-block mb-2 p-3 bg-gray-100 rounded-full border-2 border-gray-200 shadow-sm">{icon}</div>}
+              <h2 className="font-rye text-3xl text-gray-800 leading-none">{title}</h2>
+              <div className="h-1 w-20 bg-boteco-red mx-auto mt-2 rounded-full"></div>
+            </div>
+
+            {/* Content */}
+            <div className="mb-8">
+              {children}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={onNext}
+              className="w-full bg-boteco-red hover:bg-red-800 text-white font-bold py-3 px-6 rounded shadow-md border-b-4 border-red-900 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2 text-lg font-marker"
+            >
+              {nextLabel}
+              <ArrowRight size={20} />
+            </button>
+          </motion.div>
+        );
+      };
+
+      // --- MAIN COMPONENT: APP ---
+      const App = () => {
+        const [currentStep, setCurrentStep] = useState('loading');
+        const [isPlaying, setIsPlaying] = useState(false);
+        const [direction, setDirection] = useState(1); // 1 for next, -1 for back
+
+        useEffect(() => {
+          // Fake loading sequence
+          if (currentStep === 'loading') {
+            const timer = setTimeout(() => {
+              setCurrentStep('intro');
+              setIsPlaying(true);
+            }, 2500);
+            return () => clearTimeout(timer);
+          }
+        }, [currentStep]);
+
+        useEffect(() => {
+          const handleFirstInteraction = () => {
+            setIsPlaying(true);
+          };
+
+          window.addEventListener('click', handleFirstInteraction, { once: true });
+          window.addEventListener('touchstart', handleFirstInteraction, { once: true });
+
+          return () => {
+            window.removeEventListener('click', handleFirstInteraction);
+            window.removeEventListener('touchstart', handleFirstInteraction);
+          };
+        }, []);
+
+        const navigate = (nextStep) => {
+          const steps = ['loading', 'intro', 'theme', 'attractions', 'food', 'experiences', 'location'];
+          const currentIndex = steps.indexOf(currentStep);
+          const nextIndex = steps.indexOf(nextStep);
+          
+          setDirection(nextIndex > currentIndex ? 1 : -1);
+          setCurrentStep(nextStep);
+        };
+
+        const handleStart = () => {
+          setIsPlaying(true);
+          navigate('theme');
+        };
+
+        // Animation Variants
+        const variants = {
+          enter: (direction) => ({
+            x: direction > 0 ? 300 : -300,
+            opacity: 0,
+            rotate: direction > 0 ? 5 : -5,
+          }),
+          center: {
+            x: 0,
+            opacity: 1,
+            rotate: 0,
+          },
+          exit: (direction) => ({
+            x: direction < 0 ? 300 : -300,
+            opacity: 0,
+            rotate: direction < 0 ? -5 : 5,
+          }),
+        };
+
+        return (
+          <div className="min-h-screen text-gray-900 font-comic overflow-hidden relative">
+            <Background />
+            <AudioPlayer isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+            
+            {/* Transition Effects Overlay */}
+            <TransitionFX step={currentStep} />
+
+            <div className="absolute inset-0 flex items-center justify-center p-4 md:p-8">
+              <AnimatePresence mode="wait" custom={direction}>
+                
+                {/* LOADING */}
+                {currentStep === 'loading' && (
+                  <motion.div
+                    key="loading"
+                    className="text-center flex flex-col items-center z-50"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, scale: 1.5 }}
+                  >
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      className="mb-4"
+                    >
+                      <Loader2 size={64} className="text-boteco-red" />
+                    </motion.div>
+                    <h2 className="font-rye text-2xl text-white drop-shadow-md bg-black/50 px-4 py-2 rounded">
+                      Gelando a cerveja...
+                    </h2>
+                  </motion.div>
+                )}
+
+                {/* INTRO */}
+                {currentStep === 'intro' && (
+                  <motion.div
+                    key="intro"
+                    custom={direction}
+                    variants={variants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="w-full max-w-md bg-white p-8 rounded-sm shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-4 border-black text-center transform -rotate-2 relative"
+                  >
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-red-500/20 transform skew-x-12"></div>
+                    
+                    <h1 className="font-rye text-5xl text-boteco-red mb-4 leading-tight drop-shadow-sm">
+                      BOTECO DO KAINÃ
+                    </h1>
+                    <p className="font-marker text-xl mb-8 text-gray-600 transform rotate-1">
+                      O convite mais fubanga do ano!
+                    </p>
+                    
+                    <button
+                      onClick={handleStart}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg text-2xl shadow-lg border-b-4 border-green-800 active:border-b-0 active:translate-y-1 transition-all animate-pulse flex items-center justify-center gap-2"
+                    >
+                      <Beer size={28} />
+                      DISGRAÇA É ISSO?
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* THEME */}
+                {currentStep === 'theme' && (
+                  <StepLayout
+                    key="theme"
+                    direction={direction}
+                    variants={variants}
+                    onBack={() => navigate('intro')}
+                    onNext={() => navigate('attractions')}
+                    nextLabel="Ver Atrações"
+                    title="O Tema É:"
+                    icon={<Star className="text-yellow-500" />}
+                  >
+                     <div className="bg-yellow-100 p-6 border-4 border-dashed border-yellow-600 transform rotate-1 mb-4">
+                        <h2 className="font-marker text-4xl text-center text-boteco-red mb-4 leading-none">
+                          {PARTY_INFO.theme}
+                        </h2>
+                        <p className="text-center font-comic text-lg font-bold text-gray-800">
+                          {PARTY_INFO.dressCode}
+                        </p>
+                     </div>
+                     <div className="text-center text-sm text-gray-500 italic">
+                        (Se não vier a caráter vai passar vergonha)
+                     </div>
+                  </StepLayout>
+                )}
+
+                {/* ATTRACTIONS */}
+                {currentStep === 'attractions' && (
+                  <StepLayout
+                    key="attractions"
+                    direction={direction}
+                    variants={variants}
+                    onBack={() => navigate('theme')}
+                    onNext={() => navigate('food')}
+                    nextLabel="Comes e Bebes"
+                    title="Atrações"
+                    icon={<Star className="text-purple-600" />}
+                  >
+                     <div className="space-y-4">
+                       {ATTRACTIONS.map((att, idx) => (
+                         <div key={idx} className="flex items-center gap-4 bg-gray-100 p-3 rounded border-l-4 border-boteco-red shadow-sm">
+                            <div className="bg-white p-2 rounded-full border border-gray-300 text-boteco-red">
+                              {att.icon}
+                            </div>
+                            <span className="font-marker text-xl">{att.name}</span>
+                         </div>
+                       ))}
+                     </div>
+                  </StepLayout>
+                )}
+
+                {/* FOOD & DRINK */}
+                {currentStep === 'food' && (
+                  <StepLayout
+                    key="food"
+                    direction={direction}
+                    variants={variants}
+                    onBack={() => navigate('attractions')}
+                    onNext={() => navigate('experiences')}
+                    nextLabel="Experiências"
+                    title="Comes & Bebes"
+                    icon={<Utensils className="text-orange-600" />}
+                  >
+                    <div className="bg-black text-white p-6 rounded-lg border-4 border-gray-600 shadow-xl font-marker relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-red-600 transform rotate-45 translate-x-8 -translate-y-8"></div>
+                      <ul className="space-y-4 relative z-10">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="text-green-400 mt-1 flex-shrink-0" />
+                          <span>Cerveja</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="text-green-400 mt-1 flex-shrink-0" />
+                          <span>Destilados Duvidosos</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="text-green-400 mt-1 flex-shrink-0" />
+                          <span>Cachorro-quente e coisaradas</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="text-green-400 mt-1 flex-shrink-0" />
+                          <span>Terá Opção Vegana</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="mt-4 bg-blue-100 p-3 rounded text-blue-900 text-sm font-bold text-center border border-blue-300">
+                      {PARTY_INFO.obs}
+                    </div>
+                  </StepLayout>
+                )}
+
+                {/* EXPERIENCES */}
+                {currentStep === 'experiences' && (
+                  <StepLayout
+                    key="experiences"
+                    direction={direction}
+                    variants={variants}
+                    onBack={() => navigate('food')}
+                    onNext={() => navigate('location')}
+                    nextLabel="Onde vai ser?"
+                    title="Experiências"
+                    icon={<Star className="text-boteco-yellow" />}
+                  >
+                    <div className="bg-white border-2 border-gray-300 p-1 shadow-sm">
+                      {/* Clipboard clip visual */}
+                      <div className="mx-auto w-24 h-4 bg-gray-400 rounded-t mb-2"></div>
+                      
+                      <div className="space-y-3 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                        {EXPERIENCES.map((exp, idx) => (
+                          <div key={idx} className="group p-2 hover:bg-yellow-50 rounded transition-colors border-b border-dashed border-gray-200 last:border-0">
+                            <div className="flex gap-2 items-baseline">
+                              <span className="font-bold text-boteco-red text-lg">#{idx + 1}</span>
+                              <h4 className="font-marker text-lg leading-tight">{exp.title}</h4>
+                            </div>
+                            <p className="text-gray-600 text-sm pl-6">{exp.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </StepLayout>
+                )}
+
+                {/* LOCATION */}
+                {currentStep === 'location' && (
+                  <motion.div
+                    key="location"
+                    custom={direction}
+                    variants={variants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="w-full max-w-md bg-white p-1 rounded-sm shadow-2xl transform rotate-1 relative"
+                  >
+                     <div className="bg-boteco-yellow p-6 border-4 border-black border-double">
+                        <button 
+                          onClick={() => navigate('experiences')}
+                          className="absolute top-4 left-4 text-black/50 hover:text-black transition-colors z-20"
+                        >
+                          <ArrowLeft size={24} />
+                        </button>
+
+                        <h2 className="font-rye text-3xl text-center mb-6 mt-2 uppercase border-b-4 border-black pb-2">
+                          Localização
+                        </h2>
+
+                        <div className="bg-white p-4 transform -rotate-1 shadow-md border border-gray-400 mb-6">
+                          <div className="flex items-center gap-2 mb-2 text-boteco-red">
+                            <MapPin size={28} />
+                            <span className="font-bold text-xl">Endereço</span>
+                          </div>
+                          <p className="text-lg font-bold text-gray-800 leading-tight">
+                            {PARTY_INFO.address}
+                          </p>
+                          <p className="text-gray-600">{PARTY_INFO.city}</p>
+                        </div>
+
+                        <div className="bg-boteco-red text-white p-4 text-center transform rotate-1 mb-6 shadow-md">
+                          <div className="flex justify-center items-center gap-2 mb-1">
+                             <Calendar size={20} />
+                             <span className="font-marker text-xl">DATA</span>
+                          </div>
+                          <p className="font-bold text-lg">06/12 Sábado</p>
+                          <p className="text-sm opacity-90">Começa as 16h e sabe-se lá quado termina...</p>
+                        </div>
+
+                        <a 
+                          href={WHATSAPP_GROUP_LINK}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block w-full bg-green-600 hover:bg-green-700 text-white text-center font-bold py-4 px-2 rounded shadow-lg border-b-4 border-green-900 active:border-b-0 active:translate-y-1 transition-all"
+                        >
+                          <div className="flex flex-col items-center justify-center">
+                            <div className="flex items-center gap-2 text-xl md:text-2xl font-marker leading-none">
+                               BROTA NO GRUPO DO ZAP
+                            </div>
+                          </div>
+                        </a>
+                     </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        );
+      };
+
+      const root = createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
   </body>
 </html>
